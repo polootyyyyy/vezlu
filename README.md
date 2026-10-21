@@ -86,12 +86,16 @@ The store contains **plaintext**. Use a private directory on a local filesystem.
 
 There is no cloud sync, model invocation, HTTP listener, shell-command tool, filesystem import/export, hook or telemetry. Outputs appear only in CLI/MCP responses. Keep secrets out of artifacts. Back up the store only while all Vezlu processes are stopped. Windows and network filesystems are not supported in this release.
 
-## Check the source
+## Check the distribution
 
-After installation, from the checkout:
+From the checkout, with Python 3.12+ available as `python`:
 
 ```sh
-.venv/bin/python -m unittest -v test_vezlu
+python scripts/verify_distribution.py
 ```
+
+The helper creates temporary build and install environments, builds one wheel and installs it with its declared dependencies. It verifies the installed module's location and runs all 25 tests from a copied test file outside the checkout, with Python path overrides and user site packages disabled. It also checks the installed `vezlu --help` and fixture demo commands. Temporary environments, build files and stores are removed when the helper exits.
+
+CI is configured to run this command on `ubuntu-latest` and `macos-latest`, each with Python 3.12 and 3.14. The workflow's job results report which combinations have passed. A live Claude Desktop session remains a separate host setup check.
 
 The tests cover isolated branches, immutable history, restarts, independent and conflicting combinations, deletion, partial ancestry, concurrent stale writers, malformed input, private paths, real SDK stdio negotiation and the CLI fixture demo. MIT licensed; see [LICENSE](LICENSE).

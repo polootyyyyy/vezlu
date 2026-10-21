@@ -250,7 +250,7 @@ class StoreTests(unittest.TestCase):
 
 class CLITests(unittest.TestCase):
     def run_cli(self, store, *args):
-        return subprocess.run([sys.executable, str(Path(__file__).with_name("vezlu.py")),
+        return subprocess.run([sys.executable, "-m", "vezlu",
                                "--store", str(store), *args], capture_output=True, text=True, timeout=20)
 
     def test_demo_and_json_dispatch_persist_across_processes(self):
@@ -287,7 +287,7 @@ class MCPTests(unittest.IsolatedAsyncioTestCase):
         from mcp import Client, StdioServerParameters
         with tempfile.TemporaryDirectory() as temp:
             parameters = StdioServerParameters(command=sys.executable,
-                args=[str(Path(__file__).with_name("vezlu.py")), "--store", str(Path(temp).resolve() / "store"), "serve"])
+                args=["-m", "vezlu", "--store", str(Path(temp).resolve() / "store"), "serve"])
             async with asyncio.timeout(40):
                 async with Client(parameters, mode="legacy") as client:
                     tools = await client.list_tools()
